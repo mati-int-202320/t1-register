@@ -18,8 +18,12 @@ package uniandes.arti;
 
 import java.util.UUID;
 
+import org.apache.camel.Exchange;
+import org.apache.camel.Predicate;
+import org.apache.camel.builder.PredicateBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
+
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.model.rest.RestBindingMode;
 
@@ -35,13 +39,46 @@ public class RestRoute extends RouteBuilder {
 	public void configure() throws Exception {
 
 		restConfiguration().component("servlet").bindingMode(RestBindingMode.auto);
+		Predicate is2XX = PredicateBuilder.and(header(Exchange.HTTP_RESPONSE_CODE).isGreaterThanOrEqualTo(200),header(Exchange.HTTP_RESPONSE_CODE).isLessThan(300));
 
 		rest().path("/crearCuenta").consumes("application/json").produces("application/json")
-				.get("{name}").to("bean:cuentaBean?method=hello(${headers.name})")
+			.post().type(Ciudadano.class).outType(Ciudadano.class)
+			.to("bean:cuentaBean?method=response")
+			.to("direct:validateCiudadano");
 
-				 .post().type(Ciudadano.class).outType(Ciudadano.class)  
-				 .to("bean:cuentaBean?method=response");
-		} 
-		 
+		from("direct:validateCiudadano").routeId("validateCiudadano")
+	        .setProperty("originalCiudadano", body()) // Almacena el objeto Ciudadano original
+			.setHeader("CamelHttpMethod", constant("POST"))
+			.setHeader("Content-Type", constant("application/json"))
+			.marshal().json(JsonLibrary.Jackson) // Marshal a JSON message
+			.to("https://carpeta-ciudadana-juank1400-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com/carpetaCiudadana/1.0.0/operador/verificar/registraduria?bridgeEndpoint=true")
+			.choice()
+				.when(is2XX)
+					.log("Respuesta validacion: ${body}")
+	                .setBody(exchangeProperty("originalCiudadano")) // Devuelve el objeto Ciudadano original
+					.to("direct:almacenarCiudadano")
+				.otherwise()
+					.log("La respuesta no fue 2XX")
+			.end();
 
+		from("direct:almacenarCiudadano").routeId("almacenarCiudadano")
+			.log("Almacenando en base de datos")
+			.to("direct:asociarOperador");
+
+		from("direct:asociarOperador").routeId("asociarOperador")
+	        .setProperty("originalCiudadano", body()) // Almacena el objeto Ciudadano original
+			.setHeader("CamelHttpMethod", constant("POST"))
+			.setHeader("Content-Type", constant("application/json"))
+			.marshal().json(JsonLibrary.Jackson) // Marshal a JSON message
+			.to("https://carpeta-ciudadana-juank1400-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com/carpetaCiudadana/1.0.0/operador/asociar?bridgeEndpoint=true")
+			.choice()
+            .when(is2XX)
+					.log("Respuesta asociacion: ${body}")
+					.setBody(exchangeProperty("originalCiudadano")) // Devuelve el objeto Ciudadano original
+					.log("Respuesta: ${body}")
+				.otherwise()
+	                .log("La respuesta no fue 2XX")
+			.end();
+
+	}
 }

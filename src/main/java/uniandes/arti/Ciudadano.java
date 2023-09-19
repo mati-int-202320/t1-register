@@ -1,14 +1,32 @@
 package uniandes.arti;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 public class Ciudadano {
 
+    @JsonProperty("identificacion")
     private long identificacion;
+
+    @JsonProperty("tipoIdentificacion")
     private String tipoIdentificacion;
+
+    @JsonProperty("nombres")
     private String nombres;
+
+    @JsonProperty("primerApellido")
     private String primerApellido;
+
+    @JsonProperty("segundoApellido")
     private String segundoApellido;
+
+    @JsonProperty("cuentaCorreoPersonal")
     private String cuentaCorreoPersonal;
+
+    @JsonProperty("telefono")
     private long telefono;   
+
+    @JsonProperty("idOperador")
     private long idOperador;     
 
     public long getIdentificacion() {
