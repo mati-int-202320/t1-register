@@ -3,9 +3,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CuentaBean {
 
-    public Ciudadano response(Ciudadano user) {
-        user.setName(user.getName().toUpperCase());
-        return user;
+    public Ciudadano response(Ciudadano ciudadano) {
+        ciudadano.setNombres(ciudadano.getNombres().toUpperCase());
+        return ciudadano;
     }
     
    public String hello(String name) {

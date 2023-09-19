@@ -36,7 +36,7 @@ public class RestRoute extends RouteBuilder {
 
 		restConfiguration().component("servlet").bindingMode(RestBindingMode.auto);
 
-		rest().path("/rest").consumes("application/json").produces("application/json")
+		rest().path("/crearCuenta").consumes("application/json").produces("application/json")
 				.get("{name}").to("bean:cuentaBean?method=hello(${headers.name})")
 
 				 .post().type(Ciudadano.class).outType(Ciudadano.class)  
