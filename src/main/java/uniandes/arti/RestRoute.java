@@ -64,7 +64,10 @@ public class RestRoute extends RouteBuilder {
 
 		from("direct:almacenarCiudadano").routeId("almacenarCiudadano")
 			.log("Almacenando en base de datos")
+			.setProperty("originalCiudadano", body()) // Almacena el objeto Ciudadano original
 			.bean(CiudadanoDAO.class) // formatea los datos del ciudadano
+			.log("Respuesta: ${body}")
+			.setBody(exchangeProperty("originalCiudadano")) // Devuelve el objeto Ciudadano original
 			.to("direct:asociarOperador");
 
 		from("direct:asociarOperador").routeId("asociarOperador")
