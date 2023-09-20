@@ -27,7 +27,7 @@ public class CiudadanoDAO implements Processor {
         Ciudadano ciudadano = exchange.getIn().getBody(Ciudadano.class);
         // Procesa la respuesta y extrae los datos necesarios del ciudadano
 
-        String sql = "INSERT INTO tu_tabla (NUMEROIDENTIFICACION, TIPOIDENTIFICACION, NOMBRES, PRIMERAPELLIDO, SEGUNDOAPELLIDO, CUENTACORREO, CELULAR, IDOPERADOR, CORREOASOCIADO, FECHAEXPEDICION) " +
+        String sql = "INSERT INTO CIUDADANO (NUMEROIDENTIFICACION, TIPOIDENTIFICACION, NOMBRES, PRIMERAPELLIDO, SEGUNDOAPELLIDO, CUENTACORREO, CELULAR, IDOPERADOR, CORREOASOCIADO, FECHAEXPEDICION) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try{
