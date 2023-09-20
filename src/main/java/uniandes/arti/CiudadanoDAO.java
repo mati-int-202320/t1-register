@@ -28,7 +28,7 @@ public class CiudadanoDAO implements Processor {
         // Procesa la respuesta y extrae los datos necesarios del ciudadano
 
         String sql = "INSERT INTO CIUDADANO (NUMEROIDENTIFICACION, TIPOIDENTIFICACION, NOMBRES, PRIMERAPELLIDO, SEGUNDOAPELLIDO, CUENTACORREO, CELULAR, IDOPERADOR, CORREOASOCIADO, FECHAEXPEDICION) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD'))";
 
         try{
             jdbcTemplate.update(sql, 
