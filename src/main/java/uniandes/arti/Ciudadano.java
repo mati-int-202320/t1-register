@@ -29,8 +29,22 @@ public class Ciudadano {
     @JsonProperty("idOperador")
     private long idOperador;     
 
+    @JsonProperty("correoAsociado")
+    private String correoAsociado;
+
+    @JsonProperty("fechaExpedicion")
+    private String fechaExpedicion;
+
+    public String getFechaExpedicion() {
+        return fechaExpedicion;
+    }
+
     public long getIdentificacion() {
         return identificacion;
+    }
+
+    public void setFechaExpedicion(String fechaExpedicion) {
+        this.fechaExpedicion = fechaExpedicion;
     }
 
     public String getTipoIdentificacion() {
@@ -61,6 +75,10 @@ public class Ciudadano {
         this.segundoApellido = segundoApellido;
     }
 
+    public void setCorreoAsociado(String correoAsociado) {
+        this.correoAsociado = correoAsociado;
+    }
+
     public void setCuentaCorreoPersonal(String cuentaCorreoPersonal) {
         this.cuentaCorreoPersonal = cuentaCorreoPersonal;
     }
@@ -85,6 +103,10 @@ public class Ciudadano {
         return cuentaCorreoPersonal;
     }
 
+    public String getCorreoAsociado() {
+        return correoAsociado;
+    }
+
     public long getTelefono() {
         return telefono;
     }
@@ -99,5 +121,5 @@ public class Ciudadano {
     public Ciudadano(long id) {
         this.identificacion = id;
     }
-   
+
 }

@@ -43,10 +43,11 @@ public class RestRoute extends RouteBuilder {
 
 		rest().path("/crearCuenta").consumes("application/json").produces("application/json")
 			.post().type(Ciudadano.class).outType(Ciudadano.class)
-			.to("bean:cuentaBean?method=response")
 			.to("direct:validateCiudadano");
 
+		// Validamos que el ciudadano exista en el servicio externo de la registraduria
 		from("direct:validateCiudadano").routeId("validateCiudadano")
+			.bean(Formateador.class)
 	        .setProperty("originalCiudadano", body()) // Almacena el objeto Ciudadano original
 			.setHeader("CamelHttpMethod", constant("POST"))
 			.setHeader("Content-Type", constant("application/json"))
@@ -72,7 +73,7 @@ public class RestRoute extends RouteBuilder {
 			.marshal().json(JsonLibrary.Jackson) // Marshal a JSON message
 			.to("https://carpeta-ciudadana-juank1400-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com/carpetaCiudadana/1.0.0/operador/asociar?bridgeEndpoint=true")
 			.choice()
-            .when(is2XX)
+            	.when(is2XX)
 					.log("Respuesta asociacion: ${body}")
 					.setBody(exchangeProperty("originalCiudadano")) // Devuelve el objeto Ciudadano original
 					.log("Respuesta: ${body}")
