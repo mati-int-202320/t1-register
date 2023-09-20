@@ -47,12 +47,12 @@ public class RestRoute extends RouteBuilder {
 
 		// Validamos que el ciudadano exista en el servicio externo de la registraduria
 		from("direct:validateCiudadano").routeId("validateCiudadano")
-			.bean(Formateador.class)
+			.bean(Formateador.class) // formatea los datos del ciudadano
 	        .setProperty("originalCiudadano", body()) // Almacena el objeto Ciudadano original
 			.setHeader("CamelHttpMethod", constant("POST"))
 			.setHeader("Content-Type", constant("application/json"))
 			.marshal().json(JsonLibrary.Jackson) // Marshal a JSON message
-			.to("https://carpeta-ciudadana-juank1400-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com/carpetaCiudadana/1.0.0/operador/verificar/registraduria?bridgeEndpoint=true")
+			.to("{{uniandes.arti.urlpath}}/operador/verificar/registraduria?bridgeEndpoint=true")
 			.choice()
 				.when(is2XX)
 					.log("Respuesta validacion: ${body}")
@@ -71,7 +71,7 @@ public class RestRoute extends RouteBuilder {
 			.setHeader("CamelHttpMethod", constant("POST"))
 			.setHeader("Content-Type", constant("application/json"))
 			.marshal().json(JsonLibrary.Jackson) // Marshal a JSON message
-			.to("https://carpeta-ciudadana-juank1400-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com/carpetaCiudadana/1.0.0/operador/asociar?bridgeEndpoint=true")
+			.to("{{uniandes.arti.urlpath}}/operador/asociar?bridgeEndpoint=true")
 			.choice()
             	.when(is2XX)
 					.log("Respuesta asociacion: ${body}")
